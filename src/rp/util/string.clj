@@ -28,3 +28,8 @@
   (some-> s
           parse-double*
           double))
+
+(defn non-blank-string?
+  "Returns true if x is a non-blank string"
+  [x] (and (string? x)
+           (not (str/blank? x))))

@@ -3,14 +3,14 @@
             [rp.util.string :refer :all]
             [clojure.spec :as s]))
 
-(deftest parse-long-test
+(deftest test-parse-long
   (are [s x] (= x (parse-long s))
     "35" 35
     "532435345" 532435345
     "a" nil
     "463f" nil))
 
-(deftest parse-double-test
+(deftest test-parse-double
   (are [s x] (= x (parse-double s))
     "0.0" 0.0
     "14.435435" 14.435435
@@ -20,7 +20,7 @@
     "a" nil
     "463f" nil))
 
-(deftest parse-boolean-test
+(deftest test-parse-boolean
   (are [s x] (= x (parse-boolean s))
     "true" true
     "True" true
@@ -38,3 +38,10 @@
     "532435345" nil
     "a" nil
     "463f" nil))
+
+(deftest test-non-blank-string?
+  (are [s x] (= x (non-blank-string? s))
+    "test" true
+    "13" true
+    "" false
+    13 false))
