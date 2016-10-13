@@ -39,9 +39,9 @@
     "a" nil
     "463f" nil))
 
-(deftest test-non-blank-string?
-  (are [s x] (= x (non-blank-string? s))
-    "test" true
-    "13" true
-    "" false
-    13 false))
+(deftest test-non-blank-string
+  (are [s x] (= x (non-blank-string s))
+    "test" "test"
+    "13" "13"
+    "" nil
+    13 nil))

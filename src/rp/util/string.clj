@@ -29,7 +29,9 @@
           parse-double*
           double))
 
-(defn non-blank-string?
-  "Returns true if x is a non-blank string"
-  [x] (and (string? x)
-           (not (str/blank? x))))
+(defn non-blank-string
+  "Returns x if it is a non-blank string, falsey otherwise."
+  [x]
+  (when (and (string? x)
+             (not (str/blank? x)))
+    x))
