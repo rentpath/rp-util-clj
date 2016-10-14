@@ -30,7 +30,7 @@
           double))
 
 (defn non-blank-string
-  "Returns x if it is a non-blank string, falsey otherwise."
+  "Returns x if it is a non-blank string, nil otherwise."
   [x]
   (when (and (string? x)
              (not (str/blank? x)))
