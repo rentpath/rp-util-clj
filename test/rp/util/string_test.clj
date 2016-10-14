@@ -1,7 +1,6 @@
 (ns rp.util.string-test
   (:require [clojure.test :refer :all]
-            [rp.util.string :refer :all]
-            [clojure.spec :as s]))
+            [rp.util.string :refer :all]))
 
 (deftest test-parse-long
   (are [s x] (= x (parse-long s))

@@ -1,20 +1,15 @@
 (ns rp.util.logic-test
   (:require [clojure.test :refer :all]
-            [clojure.spec :as s]
-            [clojure.spec.test :as stest]
             [rp.util.logic :refer :all]))
 
-(s/fdef rp.util.logic/xor
-        :args (s/cat :p boolean? :q boolean?)
-        :ret boolean?
-        :fn (fn [{{:keys [p q]} :args
-                  ret :ret}]
-              (let [truth-table {[false false] false
-                                 [false  true] true
-                                 [true  false] true
-                                 [true   true] false}]
-                (= ret (get truth-table [p q])))))
-
-(deftest test-xor
-  (let [[{:keys [failure]}] (stest/check 'rp.util.logic/xor)]
-    (is (not failure))))
+(deftest test-only-one
+  (are [xs x] (is (= x (apply only-one xs)))
+    [false true false] true
+    [13 nil false] 13
+    [nil "bob" nil] "bob"
+    [false ["christmas"] false] ["christmas"]
+    [[:test]] [:test]
+    [:test :christmas] nil
+    [nil false nil] nil
+    [false false false] nil
+    [true true false] nil))
