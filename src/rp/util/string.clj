@@ -5,7 +5,6 @@
 (def ^:const long-regex (re-pattern "([-+]?)(?:(0)|([1-9][0-9]*)|0[xX]([0-9A-Fa-f]+)|0([0-7]+)|([1-9][0-9]?)[rR]([0-9A-Za-z]+)|0[0-9]+)(N)?"))
 (def ^:const double-regex (re-pattern "([-+]?[0-9]+(\\.[0-9]*)?([eE][-+]?[0-9]+)?)(M)?"))
 (def ^:const bool-regex (re-pattern "(?i)true|false"))
-
 (def ^:const comma-regex #",")
 
 (defn parseable?
@@ -46,3 +45,8 @@
   (when (and (string? x)
              (not (str/blank? x)))
     x))
+
+(defn split-on-comma
+  [s]
+  (when-not (str/blank? s)
+    (mapv str/trim (str/split s comma-regex))))

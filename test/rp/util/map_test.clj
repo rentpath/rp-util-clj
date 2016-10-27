@@ -33,7 +33,7 @@
                              :active {:paul 2
                                       :ringo 4}}]
     (is (= relocated-by-active
-           (relocate-keys-by active :active m)))))
+           (relocate-keys-by active [:active] m)))))
 
 (deftest test-relocate-vals-by
   (let [m {:john 1
@@ -46,4 +46,40 @@
                                      :greater-than-2 {:george 3
                                                       :ringo 4}}]
     (is (= relocated-by-greater-than-2
-           (relocate-vals-by greater-than-2 :greater-than-2 m)))))
+           (relocate-vals-by greater-than-2 [:greater-than-2] m)))))
+
+(deftest test-dissoc-in
+  (is (= (dissoc-in {:a {:b {:c 1 :d 2}}} [:a :b :c])
+         {:a {:b {:d 2}}}))
+  (is (= (dissoc-in {:a {:b {:c 1}}} [:a :b :c])
+         {}))
+  (is (= (dissoc-in {:a {:b {:c 1} :d 2}} [:a :b :c])
+         {:a {:d 2}}))
+  (is (= (dissoc-in {:a 1} [])
+         {:a 1})))
+
+(deftest test-relocate-keys
+  (let [m {:homer-parents {:abe :male
+                           :mona :female}
+           :flanders {:ned :male
+                      :maude :female
+                      :todd :male
+                      :rod :male}
+           :simpsons {:marge :female
+                      :homer :male
+                      :maggie :female
+                      :bart :male
+                      :lisa :female}}
+        relocated {:flanders {:ned :male
+                              :maude :female
+                              :todd :male
+                              :rod :male}
+                   :simpsons {:marge :female
+                              :homer :male
+                              :maggie :female
+                              :bart :male
+                              :lisa :female
+                              :parents {:homer {:abe :male
+                                                :mona :female}}}}]
+    (is (= relocated
+           (relocate-keys m [:homer-parents] [:simpsons :parents :homer])))))
