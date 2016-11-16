@@ -2,30 +2,57 @@
   (:require [clojure.tools.reader.edn :as edn]
             [clojure.string :as str]))
 
-(def ^:const long-regex (re-pattern "([-+]?)(?:(0)|([1-9][0-9]*)|0[xX]([0-9A-Fa-f]+)|0([0-7]+)|([1-9][0-9]?)[rR]([0-9A-Za-z]+)|0[0-9]+)(N)?"))
-(def ^:const double-regex (re-pattern "([-+]?[0-9]+(\\.[0-9]*)?([eE][-+]?[0-9]+)?)(M)?"))
-(def ^:const bool-regex (re-pattern "(?i)true|false"))
-(def ^:const comma-regex #",")
+(def regexes
+  {:long (re-pattern "([-+]?)(?:(0)|([1-9][0-9]*)|0[xX]([0-9A-Fa-f]+)|0([0-7]+)|([1-9][0-9]?)[rR]([0-9A-Za-z]+)|0[0-9]+)(N)?")
+   :double (re-pattern "([-+]?[0-9]+(\\.[0-9]*)?([eE][-+]?[0-9]+)?)(M)?")
+   :boolean (re-pattern "(?i)true|false")
+   :comma #","
+   :caret #"\^"
+   :bat #"\^\+\^"})
 
-(defn parseable?
+(declare non-blank-string)
+
+(defn- parseable
   [re s]
-  (first (re-matches re s)))
+  (when non-blank-string
+    (first (re-matches re s))))
 
-(defn make-parser
-  [regex]
+(defn- make-parser
+  [re]
   (fn [s]
-    (when (and (string? s) (parseable? regex s))
+    (when (parseable re s)
       (try
         (edn/read-string s)
         (catch Exception e)))))
 
+(defn- string
+  [s]
+  (when (string? s)
+    s))
+
+(defn- non-blank
+  [s]
+  (when-not (str/blank? s)
+    s))
+
+(defn- lower-case
+  [s]
+  (when s
+    (str/lower-case s)))
+
+(defn- split-on-re
+  [re s]
+  (when (non-blank-string s)
+    (mapv str/trim (str/split s re))))
+
+(def parse-double* (make-parser (:double regexes)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Public API
-
-(def parse-long (make-parser long-regex))
-(def parse-boolean (comp (make-parser bool-regex)
-                         #(when % (str/lower-case %))))
-(def parse-double* (make-parser double-regex))
+(def non-blank-string (comp non-blank string))
+(def parse-long (make-parser (:long regexes)))
+(def parse-boolean (comp (make-parser (:boolean regexes))
+                         lower-case))
 
 (defn parse-double
   [s]
@@ -39,14 +66,11 @@
           parse-double*
           bigdec))
 
-(defn non-blank-string
-  "Returns x if it is a non-blank string, nil otherwise."
-  [x]
-  (when (and (string? x)
-             (not (str/blank? x)))
-    x))
+(def split-on-comma (partial split-on-re (:comma regexes)))
+(def split-on-caret (partial split-on-re (:caret regexes)))
+(def split-on-bat (partial split-on-re (:bat regexes)))
 
-(defn split-on-comma
+(defn split-on-bats-and-carets
   [s]
-  (when-not (str/blank? s)
-    (mapv str/trim (str/split s comma-regex))))
+  (when (non-blank-string s)
+    (mapv split-on-caret (split-on-bat s))))

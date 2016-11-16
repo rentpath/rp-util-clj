@@ -39,8 +39,29 @@
     "463f" nil))
 
 (deftest test-non-blank-string
-  (are [s x] (= x (non-blank-string s))
+  (are [x result] (= result (non-blank-string x))
     "test" "test"
     "13" "13"
     "" nil
     13 nil))
+
+(deftest test-split-on-re
+  (are [x re result] (= result (#'rp.util.string/split-on-re re x))
+    nil (:caret regexes) nil
+    13 (:comma regexes) nil
+    "" (:caret regexes) nil
+    "," (:comma regexes) []
+    "^" (:caret regexes) []
+    "foobar" (:caret regexes) ["foobar"]
+    "foo^bar" (:caret regexes) ["foo" "bar"]
+    "^foo^bar^" (:caret regexes) ["" "foo" "bar"]
+    "fred,bill,bob" (:comma regexes) ["fred" "bill" "bob"]))
+
+(deftest test-split-on-bats-and-carets
+  (are [x result] (= result (split-on-bats-and-carets x))
+    nil nil
+    "" nil
+    "foobar" [["foobar"]]
+    "foobar^+^barfoo" [["foobar"] ["barfoo"]]
+    "alpha^1^+^beta^2" [["alpha" "1"] ["beta" "2"]]
+    "^^+^bar^^+^" [[] ["bar"]]))
