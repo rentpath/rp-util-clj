@@ -82,4 +82,10 @@
                               :parents {:homer {:abe :male
                                                 :mona :female}}}}]
     (is (= relocated
-           (relocate-keys m [:homer-parents] [:simpsons :parents :homer])))))
+           (relocate-keys m [:homer-parents] [:simpsons :parents :homer]))))
+
+  (is (= {:range {:low 3}}
+         (relocate-keys {:range {:low 3 :high nil}}
+                        [:range :high]
+                        [:some :where :else]))
+      "Original keys should always be removed, even when present with a nil value."))

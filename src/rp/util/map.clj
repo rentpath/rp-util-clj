@@ -49,6 +49,6 @@
   "Returns a map where the value in a nested associative structure is relocated
    from the path specified by key sequence ks1 to the path of key sequence ks2."
   [m ks1 ks2]
-  (if-let [val-to-move (get-in m ks1)]
-    (assoc-in (dissoc-in m ks1) ks2 val-to-move)
-    m))
+  (let [val-to-move (get-in m ks1)]
+    (cond-> (dissoc-in m ks1)
+      val-to-move (assoc-in ks2 val-to-move))))
