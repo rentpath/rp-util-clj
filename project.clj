@@ -1,4 +1,4 @@
-(defproject com.rentpath/rp-util-clj "0.2.5"
+(defproject com.rentpath/rp-util-clj "0.2.6-SNAPSHOT"
   :description "Common utilities"
   :url "https://github.com/rentpath/rp-util-clj"
   :license {:name "Eclipse Public License"
