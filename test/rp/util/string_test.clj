@@ -7,7 +7,9 @@
     "35" 35
     "532435345" 532435345
     "a" nil
-    "463f" nil))
+    "463f" nil
+    nil nil
+    "" nil))
 
 (deftest test-parse-double
   (are [s x] (= x (parse-double s))
@@ -17,7 +19,9 @@
     "35" 35.0
     "532435345" 5.32435345E8
     "a" nil
-    "463f" nil))
+    "463f" nil
+    nil nil
+    "" nil))
 
 (deftest test-parse-boolean
   (are [s x] (= x (parse-boolean s))
@@ -36,14 +40,17 @@
     "35" nil
     "532435345" nil
     "a" nil
-    "463f" nil))
+    "463f" nil
+    nil nil
+    "" nil))
 
 (deftest test-non-blank-string
   (are [x result] (= result (non-blank-string x))
     "test" "test"
     "13" "13"
     "" nil
-    13 nil))
+    13 nil
+    nil nil))
 
 (deftest test-split-on-re
   (are [x re result] (= result (#'rp.util.string/split-on-re re x))

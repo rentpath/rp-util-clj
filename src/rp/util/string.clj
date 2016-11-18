@@ -14,7 +14,7 @@
 
 (defn- parseable
   [re s]
-  (when non-blank-string
+  (when (non-blank-string s)
     (first (re-matches re s))))
 
 (defn- make-parser
