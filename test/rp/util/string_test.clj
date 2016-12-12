@@ -72,3 +72,18 @@
     "foobar^+^barfoo" [["foobar"] ["barfoo"]]
     "alpha^1^+^beta^2" [["alpha" "1"] ["beta" "2"]]
     "^^+^bar^^+^" [[] ["bar"]]))
+
+(deftest test-bats-and-carets->maps
+  (let [ks [:x :y]]
+    (are [x result] (= result (bats-and-carets->maps ks x))
+      nil []
+      "" []
+      ;; A value for each key (normal case)
+      "a^b^+^c^d" [{:x "a" :y "b"}
+                   {:x "c" :y "d"}]
+      ;; Extra values are ignored
+      "a^b^+^c^d^e" [{:x "a" :y "b"}
+                     {:x "c" :y "d"}]
+      ;; Keys without a value are discarded
+      "a^b^+^c" [{:x "a" :y "b"}
+                 {:x "c"}])))

@@ -1,6 +1,7 @@
 (ns rp.util.string
   (:require [clojure.tools.reader.edn :as edn]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [rp.util.seq :as util-seq]))
 
 (def regexes
   {:long (re-pattern "([-+]?)(?:(0)|([1-9][0-9]*)|0[xX]([0-9A-Fa-f]+)|0([0-7]+)|([1-9][0-9]?)[rR]([0-9A-Za-z]+)|0[0-9]+)(N)?")
@@ -74,3 +75,7 @@
   [s]
   (when (non-blank-string s)
     (mapv split-on-caret (split-on-bat s))))
+
+(defn bats-and-carets->maps
+  [ks s]
+  (util-seq/tuples->maps ks (split-on-bats-and-carets s)))
