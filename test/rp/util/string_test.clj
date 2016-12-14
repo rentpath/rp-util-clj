@@ -73,6 +73,18 @@
     "alpha^1^+^beta^2" [["alpha" "1"] ["beta" "2"]]
     "^^+^bar^^+^" [[] ["bar"]]))
 
+(deftest test-carets->map
+  (let [ks [:x :y]]
+    (are [x result] (= result (carets->map ks x))
+      nil {}
+      "" {}
+      ;; A value for each key (normal case)
+      "a^b" {:x "a" :y "b"}
+      ;; Extra values are ignored
+      "a^b^c" {:x "a" :y "b"}
+      ;; Keys without a value are discarded
+      "a" {:x "a"})))
+
 (deftest test-bats-and-carets->maps
   (let [ks [:x :y]]
     (are [x result] (= result (bats-and-carets->maps ks x))
