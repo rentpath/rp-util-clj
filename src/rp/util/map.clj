@@ -52,3 +52,14 @@
   (let [val-to-move (get-in m ks1)]
     (cond-> (dissoc-in m ks1)
       val-to-move (assoc-in ks2 val-to-move))))
+
+(defn ensure-keys
+  "Ensures that the given map has all of the specified keys.
+   Any missing keys are associated with a `nil` value."
+  [ks m]
+  (reduce (fn [acc k]
+            (if (contains? acc k)
+              acc
+              (assoc acc k nil)))
+          m
+          ks))
