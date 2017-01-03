@@ -52,3 +52,10 @@
   (let [val-to-move (get-in m ks1)]
     (cond-> (dissoc-in m ks1)
       val-to-move (assoc-in ks2 val-to-move))))
+
+(defn remove-nils
+  [m]
+  (reduce-kv (fn [acc k v]
+               (if v (assoc acc k v) acc))
+             {}
+             m))
