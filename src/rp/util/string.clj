@@ -42,8 +42,9 @@
 
 (defn- split-on-re
   [re s]
-  (when (non-blank-string s)
-    (mapv str/trim (str/split s re))))
+  (if (non-blank-string s)
+    (mapv str/trim (str/split s re))
+    []))
 
 (def parse-double* (make-parser (:double regexes)))
 
@@ -72,8 +73,7 @@
 
 (defn split-on-bats-and-carets
   [s]
-  (when (non-blank-string s)
-    (mapv split-on-caret (split-on-bat s))))
+  (mapv split-on-caret (split-on-bat s)))
 
 (defn carets->map
   [ks s]
