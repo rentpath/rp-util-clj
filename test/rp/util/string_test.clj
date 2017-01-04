@@ -76,14 +76,16 @@
 (deftest test-carets->map
   (let [ks [:x :y]]
     (are [x result] (= result (carets->map ks x))
-      nil {}
-      "" {}
       ;; A value for each key (normal case)
       "a^b" {:x "a" :y "b"}
       ;; Extra values are ignored
       "a^b^c" {:x "a" :y "b"}
-      ;; Keys without a value are discarded
-      "a" {:x "a"})))
+      ;; Keys without a value default to nil
+      nil {:x nil :y nil}
+      "" {:x nil :y nil}
+      "a" {:x "a" :y nil}
+      "^b" {:x nil :y "b"}
+      " ^ b" {:x nil :y "b"})))
 
 (deftest test-bats-and-carets->maps
   (let [ks [:x :y]]
@@ -96,6 +98,8 @@
       ;; Extra values are ignored
       "a^b^+^c^d^e" [{:x "a" :y "b"}
                      {:x "c" :y "d"}]
-      ;; Keys without a value are discarded
+      ;; Keys without a value default to nil
       "a^b^+^c" [{:x "a" :y "b"}
-                 {:x "c"}])))
+                 {:x "c" :y nil}]
+      "^b^+^^d" [{:x nil :y "b"}
+                 {:x nil :y "d"}])))

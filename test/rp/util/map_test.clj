@@ -89,3 +89,7 @@
                         [:range :high]
                         [:some :where :else]))
       "Original keys should always be removed, even when present with a nil value."))
+
+(deftest test-ensure-keys
+  (is (= {:a nil :b "foo" :c nil :d "bar"}
+         (ensure-keys [:a :b :c] {:b "foo" :d "bar"}))))
