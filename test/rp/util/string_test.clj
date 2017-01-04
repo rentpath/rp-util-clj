@@ -84,7 +84,9 @@
       ;; Extra values are ignored
       "a^b^c" {:x "a" :y "b"}
       ;; Keys without a value are discarded
-      "a" {:x "a"})))
+      "a" {:x "a"}
+      "^b" {:y "b"}
+      " ^ b" {:y "b"})))
 
 (deftest test-bats-and-carets->maps
   (let [ks [:x :y]]
@@ -99,4 +101,6 @@
                      {:x "c" :y "d"}]
       ;; Keys without a value are discarded
       "a^b^+^c" [{:x "a" :y "b"}
-                 {:x "c"}])))
+                 {:x "c"}]
+      "^b^+^^d" [{:y "b"}
+                 {:y "d"}])))

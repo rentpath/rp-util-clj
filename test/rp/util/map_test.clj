@@ -89,3 +89,7 @@
                         [:range :high]
                         [:some :where :else]))
       "Original keys should always be removed, even when present with a nil value."))
+
+(deftest test-remove-nils
+  (is (= {:a 1 :c ""}
+         (remove-nils {:a 1 :b nil :c ""}))))
