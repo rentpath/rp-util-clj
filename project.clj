@@ -9,5 +9,6 @@
                                      :password [:gpg :env/CLOJARS_PASSWORD]
                                      :sign-releases false}]]
   :global-vars {*warn-on-reflection* true}
-  :dependencies [[org.clojure/tools.reader "1.0.0-beta3"]]
-  :profiles {:dev {:dependencies [[org.clojure/clojure "1.8.0"]]}})
+  :dependencies [[org.clojure/tools.reader "1.0.0-beta3"]
+                 [org.clojure/test.check "0.9.0"]]
+  :profiles {:dev {:dependencies [[org.clojure/clojure "1.9.0-alpha14"]]}})
