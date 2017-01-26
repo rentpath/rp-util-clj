@@ -26,3 +26,9 @@
                         :gen (generator (s/gen double?))))
 (s/def ::nat-long (s/and ::long util-number/nat-num?))
 (s/def ::nat-double (s/and ::double util-number/nat-num?))
+(s/def ::boolean (s/spec (conformer util-string/parse-boolean)
+                         :gen (generator (s/gen boolean?))))
+
+
+;; (g/sample (s/gen ::nat-long) 50)
+;; (g/sample (s/gen ::boolean) 50)
