@@ -9,7 +9,7 @@
 (defn conformer
   [f]
   (s/conformer (fn [x]
-                 (if-let [result (f x)]
+                 (if-some [result (f x)]
                    result
                    invalid))
                str))
@@ -20,6 +20,8 @@
     (g/bind gen
             #(g/return (str %)))))
 
+(s/def ::boolean (s/spec (conformer util-string/parse-boolean)
+                         :gen (generator (s/gen boolean?))))
 (s/def ::long (s/spec (conformer util-string/parse-long)
                       :gen (generator (s/gen int?))))
 (s/def ::double (s/spec (conformer util-string/parse-double)
