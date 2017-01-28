@@ -59,3 +59,13 @@
                (if v (assoc acc k v) acc))
              {}
              m))
+
+(defn closed-interval?
+  "Returns true when limits `low` and `high` are both defined and
+  `high` is greater than or equal to low. Returns true if only one of
+  the limits `low` or `high` is defined. Otherwise returns false."
+  [{:keys [low high]}]
+  (cond
+    (and low high) (<= low high)
+    (or low high) true
+    :else false))
