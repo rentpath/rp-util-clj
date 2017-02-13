@@ -1,4 +1,5 @@
-(ns rp.util.number)
+(ns rp.util.number
+  (:require [clojure.spec :as s]))
 
 (defn nat-num?
   [x]
@@ -16,6 +17,8 @@
        (<= -90 x 90)))
 
 (defn within-bounding-box?
-  [[lng1 lat1 lng2 lat2] [longitude latitude]]
-  (and (<= lng1 longitude lng2)
+  [[lng1 lat1 lng2 lat2 :as bounding-box]
+   [longitude latitude :as coordinates]]
+  (and (every? number? (into bounding-box coordinates))
+       (<= lng1 longitude lng2)
        (<= lat1 latitude lat2)))
