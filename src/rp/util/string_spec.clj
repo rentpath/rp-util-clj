@@ -33,8 +33,8 @@
 (s/def ::bounding-box (s/spec (s/conformer (truthy->conform-pred util-string/parse-bounding-box)
                                            str)
                               :gen (fn []
-                                     (g/bind (s/gen (s/tuple (s/and double? util-number/longitude?)
-                                                             (s/and double? util-number/latitude?)
-                                                             (s/and double? util-number/longitude?)
-                                                             (s/and double? util-number/latitude?)))
+                                     (g/bind (g/tuple (g/double* {:min -180 :max 180})
+                                                      (g/double* {:min -90 :max 90})
+                                                      (g/double* {:min -180 :max 180})
+                                                      (g/double* {:min -90 :max 90}))
                                              #(g/return (apply str (interpose "," %)))))))
