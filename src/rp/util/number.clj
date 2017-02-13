@@ -1,5 +1,4 @@
-(ns rp.util.number
-  (:require [clojure.spec :as s]))
+(ns rp.util.number)
 
 (defn nat-num?
   [x]
