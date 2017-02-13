@@ -4,27 +4,37 @@
             [clojure.spec :as s]
             [clojure.spec.gen :as g]))
 
-(def invalid ::s/invalid)
+(def spec-invalid ::s/invalid)
 
-(defn conformer
+(defn truthy->conform-pred
   [f]
-  (s/conformer (fn [x]
-                 (if-some [result (f x)]
-                   result
-                   invalid))
-               str))
+  (fn [x]
+    (if-some [result (f x)]
+      result
+      spec-invalid)))
 
-(defn generator
-  [gen]
-  (fn []
-    (g/bind gen
-            #(g/return (str %)))))
-
-(s/def ::boolean (s/spec (conformer util-string/parse-boolean)
-                         :gen (generator (s/gen boolean?))))
-(s/def ::long (s/spec (conformer util-string/parse-long)
-                      :gen (generator (s/gen int?))))
-(s/def ::double (s/spec (conformer util-string/parse-double)
-                        :gen (generator (s/gen double?))))
+(s/def ::boolean (s/spec (s/conformer (truthy->conform-pred util-string/parse-boolean)
+                                      str)
+                         :gen (fn []
+                                (g/bind (s/gen boolean?)
+                                        #(g/return (str %))))))
+(s/def ::long (s/spec (s/conformer (truthy->conform-pred util-string/parse-long)
+                                   str)
+                      :gen (fn []
+                             (g/bind (s/gen int?)
+                                     #(g/return (str %))))))
+(s/def ::double (s/spec (s/conformer (truthy->conform-pred util-string/parse-double)
+                                     str)
+                        :gen (fn []
+                               (g/bind (s/gen double?)
+                                       #(g/return (str %))))))
 (s/def ::nat-long (s/and ::long util-number/nat-num?))
 (s/def ::nat-double (s/and ::double util-number/nat-num?))
+(s/def ::bounding-box (s/spec (s/conformer (truthy->conform-pred util-string/parse-bounding-box)
+                                           str)
+                              :gen (fn []
+                                     (g/bind (g/tuple (g/double* {:min -180 :max 180})
+                                                      (g/double* {:min -90 :max 90})
+                                                      (g/double* {:min -180 :max 180})
+                                                      (g/double* {:min -90 :max 90}))
+                                             #(g/return (apply str (interpose "," %)))))))

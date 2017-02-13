@@ -1,7 +1,8 @@
 (ns rp.util.string
   (:require [clojure.tools.reader.edn :as edn]
             [clojure.string :as str]
-            [rp.util.map :as util-map]))
+            [rp.util.map :as util-map]
+            [rp.util.number :as util-number]))
 
 (def regexes
   {:long (re-pattern "([-+]?)(?:(0)|([1-9][0-9]*)|0[xX]([0-9A-Fa-f]+)|0([0-7]+)|([1-9][0-9]?)[rR]([0-9A-Za-z]+)|0[0-9]+)(N)?")
@@ -87,3 +88,13 @@
 (defn bats-and-carets->maps
   [ks s]
   (mapv #(carets->map ks %) (split-on-bat s)))
+
+(defn parse-bounding-box
+  [s]
+  (when (string? s)
+    (let [[lng1 lat1 lng2 lat2 :as bounding-box] (mapv parse-double (split-on-comma s))]
+      (when (and (util-number/longitude? lng1)
+                 (util-number/latitude? lat1)
+                 (util-number/longitude? lng2)
+                 (util-number/latitude? lat2))
+        bounding-box))))
