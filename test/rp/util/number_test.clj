@@ -8,7 +8,8 @@
   (is (nat-num? 3))
   (is (nat-num? 3.0))
   (is (not (nat-num? -1)))
-  (is (not (nat-num? -0.1))))
+  (is (not (nat-num? -0.1)))
+  (is (not (nat-num? nil))))
 
 (deftest test-longitude?
   (is (longitude? 0))
@@ -20,7 +21,8 @@
   (is (not (longitude? 181)))
   (is (not (longitude? -181)))
   (is (not (longitude? 180.1)))
-  (is (not (longitude? -180.1))))
+  (is (not (longitude? -180.1)))
+  (is (not (longitude? nil))))
 
 (deftest test-latitude?
   (is (latitude? 0))
@@ -32,7 +34,8 @@
   (is (not (latitude? 91)))
   (is (not (latitude? -91)))
   (is (not (latitude? 90.1)))
-  (is (not (latitude? -90.1))))
+  (is (not (latitude? -90.1)))
+  (is (not (latitude? nil))))
 
 (deftest test-within-bounding-box?
   (is (within-bounding-box? [3 1 0 5] [2 4]))
