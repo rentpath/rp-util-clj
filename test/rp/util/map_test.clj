@@ -93,3 +93,17 @@
 (deftest test-remove-nils
   (is (= {:a 1 :c ""}
          (remove-nils {:a 1 :b nil :c ""}))))
+
+(deftest test-closed-interval?
+  (is (closed-interval? {:low 3 :high 5}))
+  (is (closed-interval? {:low 3}))
+  (is (closed-interval? {:high 3}))
+  (is (closed-interval? {:low 3 :high nil}))
+  (is (closed-interval? {:low nil :high 5}))
+  (is (closed-interval? {:low 5 :high 5}))
+  (is (closed-interval? {:low nil :high nil}))
+  (is (closed-interval? {}))
+  (is (not (closed-interval? "Alice")))
+  (is (not (closed-interval? {:low "Alice" :high "Bob"})))
+  (is (not (closed-interval? {:low "Alice"})))
+  (is (not (closed-interval? {:high "Bob"}))))
