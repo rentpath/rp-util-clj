@@ -1,4 +1,5 @@
-(ns rp.util.map)
+(ns rp.util.map
+  (:require [rp.util.logic :as util-logic]))
 
 (defn select-by
   "Returns a map where the entries satisfy pred."
@@ -61,11 +62,15 @@
              m))
 
 (defn closed-interval?
-  "Returns true when limits `low` and `high` are both defined and
-  `high` is greater than or equal to low. Returns true if only one of
-  the limits `low` or `high` is defined. Otherwise returns false."
-  [{:keys [low high]}]
-  (cond
-    (and low high) (<= low high)
-    (or low high) true
-    :else false))
+  "Returns true when limits `low` and `high` are both numbers and `high`
+   is greater than or equal to low. Returns true if only one of the limits
+   `low` or `high` is defined and a number. Returns true if neither of the
+   limits are defined. Otherwise returns false."
+  [{:keys [low high] :as m}]
+  (let [only-one (util-logic/only-one low high)]
+    (and (map? m)
+         (cond
+           (every? nil? [low high]) true
+           only-one (number? only-one)
+           (every? number? [low high]) (<= low high)
+           :else false))))
