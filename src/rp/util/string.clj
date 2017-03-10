@@ -10,7 +10,8 @@
    :boolean (re-pattern "(?i)true|false")
    :comma #","
    :caret #"\^"
-   :bat #"\^\+\^"})
+   :bat #"\^\+\^"
+   :sad-face #"_\+_"})
 
 (declare non-blank-string)
 
@@ -72,6 +73,7 @@
 (def split-on-comma (partial split-on-re (:comma regexes)))
 (def split-on-caret (partial split-on-re (:caret regexes)))
 (def split-on-bat (partial split-on-re (:bat regexes)))
+(def split-on-sad-face (partial split-on-re (:sad-face regexes)))
 
 (defn split-on-bats-and-carets
   [s]

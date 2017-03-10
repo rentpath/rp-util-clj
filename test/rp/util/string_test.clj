@@ -104,3 +104,7 @@
                  {:x "c"}]
       "^b^+^^d" [{:y "b"}
                  {:y "d"}])))
+
+(deftest test-split-on-sad-face
+  (is (= ["alpha" "beta^gamma" "delta"]
+         (split-on-sad-face "alpha_+_beta^gamma_+_delta"))))
