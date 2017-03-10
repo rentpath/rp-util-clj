@@ -42,12 +42,6 @@
   (when s
     (str/lower-case s)))
 
-(defn- split-on-re
-  [re s]
-  (if (non-blank-string s)
-    (mapv str/trim (str/split s re))
-    []))
-
 (def parse-double* (make-parser (:double regexes)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -68,6 +62,13 @@
   (some-> s
           parse-double*
           bigdec))
+
+(defn split-on-re
+  "Useful for its check on blankness and interstitial whitespace trimming."
+  [re s]
+  (if (non-blank-string s)
+    (mapv str/trim (str/split s re))
+    []))
 
 (def split-on-comma (partial split-on-re (:comma regexes)))
 (def split-on-caret (partial split-on-re (:caret regexes)))
