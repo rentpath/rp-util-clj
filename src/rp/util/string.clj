@@ -8,9 +8,10 @@
   {:long (re-pattern "([-+]?)(?:(0)|([1-9][0-9]*)|0[xX]([0-9A-Fa-f]+)|0([0-7]+)|([1-9][0-9]?)[rR]([0-9A-Za-z]+)|0[0-9]+)(N)?")
    :double (re-pattern "([-+]?[0-9]+(\\.[0-9]*)?([eE][-+]?[0-9]+)?)(M)?")
    :boolean (re-pattern "(?i)true|false")
-   :comma #","
+   :bat #"\^\+\^"
    :caret #"\^"
-   :bat #"\^\+\^"})
+   :comma #","
+   :dash #"-"})
 
 (declare non-blank-string)
 
@@ -70,9 +71,10 @@
     (mapv str/trim (str/split s re))
     []))
 
-(def split-on-comma (partial split-on-re (:comma regexes)))
-(def split-on-caret (partial split-on-re (:caret regexes)))
 (def split-on-bat (partial split-on-re (:bat regexes)))
+(def split-on-caret (partial split-on-re (:caret regexes)))
+(def split-on-comma (partial split-on-re (:comma regexes)))
+(def split-on-dash (partial split-on-re (:dash regexes)))
 
 (defn split-on-bats-and-carets
   [s]
