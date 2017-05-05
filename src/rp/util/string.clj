@@ -11,7 +11,8 @@
    :bat #"\^\+\^"
    :caret #"\^"
    :comma #","
-   :dash #"-"})
+   :dash #"-"
+   :slash #"/"})
 
 (declare non-blank-string)
 
@@ -75,6 +76,7 @@
 (def split-on-caret (partial split-on-re (:caret regexes)))
 (def split-on-comma (partial split-on-re (:comma regexes)))
 (def split-on-dash (partial split-on-re (:dash regexes)))
+(def split-on-slash (partial split-on-re (:slash regexes)))
 
 (defn split-on-bats-and-carets
   [s]

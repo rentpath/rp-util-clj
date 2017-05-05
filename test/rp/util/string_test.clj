@@ -60,12 +60,14 @@
     "," (:comma regexes) []
     "^" (:caret regexes) []
     "-" (:dash regexes) []
+    "/" (:slash regexes) []
     "foobar" (:caret regexes) ["foobar"]
     "foo^bar" (:caret regexes) ["foo" "bar"]
     "^foo^bar^" (:caret regexes) ["" "foo" "bar"]
     " ^ foo ^ bar ^" (:caret regexes) ["" "foo" "bar"]
     "fred,bill,bob" (:comma regexes) ["fred" "bill" "bob"]
-    "fred-bilbo-baggins" (:dash regexes) ["fred" "bilbo" "baggins"]))
+    "fred-bilbo-baggins" (:dash regexes) ["fred" "bilbo" "baggins"]
+    "fred/bilbo/baggins" (:slash regexes) ["fred" "bilbo" "baggins"]))
 
 (deftest test-split-on-bats-and-carets
   (are [x result] (= result (split-on-bats-and-carets x))
