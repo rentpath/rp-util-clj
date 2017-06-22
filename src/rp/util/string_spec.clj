@@ -1,10 +1,10 @@
 (ns rp.util.string-spec
   (:require [rp.util.string :as util-string]
             [rp.util.number :as util-number]
-            [clojure.spec :as s]
-            [clojure.spec.gen :as g]))
+            [clojure.spec.alpha :as spec]
+            [clojure.spec.gen.alpha :as spec-gen]))
 
-(def spec-invalid ::s/invalid)
+(def spec-invalid ::spec/invalid)
 
 (defn truthy->conform-pred
   [f]
@@ -13,28 +13,28 @@
       result
       spec-invalid)))
 
-(s/def ::boolean (s/spec (s/conformer (truthy->conform-pred util-string/parse-boolean)
-                                      str)
-                         :gen (fn []
-                                (g/bind (s/gen boolean?)
-                                        #(g/return (str %))))))
-(s/def ::long (s/spec (s/conformer (truthy->conform-pred util-string/parse-long)
-                                   str)
-                      :gen (fn []
-                             (g/bind (s/gen int?)
-                                     #(g/return (str %))))))
-(s/def ::double (s/spec (s/conformer (truthy->conform-pred util-string/parse-double)
-                                     str)
-                        :gen (fn []
-                               (g/bind (s/gen double?)
-                                       #(g/return (str %))))))
-(s/def ::nat-long (s/and ::long util-number/nat-num?))
-(s/def ::nat-double (s/and ::double util-number/nat-num?))
-(s/def ::bounding-box (s/spec (s/conformer (truthy->conform-pred util-string/parse-bounding-box)
-                                           str)
+(spec/def ::boolean (spec/spec (spec/conformer (truthy->conform-pred util-string/parse-boolean)
+                                               str)
+                               :gen (fn []
+                                      (spec-gen/bind (spec/gen boolean?)
+                                                     #(spec-gen/return (str %))))))
+(spec/def ::long (spec/spec (spec/conformer (truthy->conform-pred util-string/parse-long)
+                                            str)
+                            :gen (fn []
+                                   (spec-gen/bind (spec/gen int?)
+                                                  #(spec-gen/return (str %))))))
+(spec/def ::double (spec/spec (spec/conformer (truthy->conform-pred util-string/parse-double)
+                                              str)
                               :gen (fn []
-                                     (g/bind (g/tuple (g/double* {:min -180 :max 180})
-                                                      (g/double* {:min -90 :max 90})
-                                                      (g/double* {:min -180 :max 180})
-                                                      (g/double* {:min -90 :max 90}))
-                                             #(g/return (apply str (interpose "," %)))))))
+                                     (spec-gen/bind (spec/gen double?)
+                                                    #(spec-gen/return (str %))))))
+(spec/def ::nat-long (spec/and ::long util-number/nat-num?))
+(spec/def ::nat-double (spec/and ::double util-number/nat-num?))
+(spec/def ::bounding-box (spec/spec (spec/conformer (truthy->conform-pred util-string/parse-bounding-box)
+                                                    str)
+                                    :gen (fn []
+                                           (spec-gen/bind (spec-gen/tuple (spec-gen/double* {:min -180 :max 180})
+                                                                          (spec-gen/double* {:min -90 :max 90})
+                                                                          (spec-gen/double* {:min -180 :max 180})
+                                                                          (spec-gen/double* {:min -90 :max 90}))
+                                                          #(spec-gen/return (apply str (interpose "," %)))))))
