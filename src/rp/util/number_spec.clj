@@ -1,6 +1,6 @@
 (ns rp.util.number-spec
   (:require [rp.util.number :as util-number]
-            [clojure.spec :as s]))
+            [clojure.spec.alpha :as spec]))
 
-(s/def ::nat-long nat-int?)
-(s/def ::nat-double (s/and double? util-number/nat-num?))
+(spec/def ::nat-long nat-int?)
+(spec/def ::nat-double (spec/and double? util-number/nat-num?))
