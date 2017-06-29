@@ -4,7 +4,8 @@
 
 (defn md5
   [^String s]
-  (let [algorithm (MessageDigest/getInstance "MD5")
-        raw (.digest algorithm (.getBytes s))
-        sign 1]
-    (format "%032x" (BigInteger. sign raw))))
+  (when s
+    (let [algorithm (MessageDigest/getInstance "MD5")
+          raw (.digest algorithm (.getBytes s))
+          sign 1]
+      (format "%032x" (BigInteger. sign raw)))))
