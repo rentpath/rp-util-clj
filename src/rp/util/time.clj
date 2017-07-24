@@ -10,7 +10,9 @@
 (def patterns
   {:review      "dd-MMM-yyyy"
    :floorplan   "MM/dd/yyyy"
-   :last-update "MM/dd/yyyy HH:mm:ss"})
+   :last-update "MM/dd/yyyy HH:mm:ss"
+   ;; Used for terminate_dm property in Rent Endeca
+   :terminate   "yyyyMMddHHmmss.SSSSSS"})
 
 (defn formatter
   "Returns case insensitive DateTimeFormatter built
@@ -66,5 +68,7 @@
   (local-time->instant s (:floorplan formatters)))
 (defmethod parse-instant :last-update [s]
   (local-time->instant s (:last-update formatters)))
+(defmethod parse-instant :terminate [s]
+  (local-time->instant s (:terminate formatters)))
 (defmethod parse-instant :iso-instant [s]
   (Instant/parse s))

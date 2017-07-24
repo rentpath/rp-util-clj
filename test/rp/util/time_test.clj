@@ -39,3 +39,11 @@
                         ["2007-10-03T16:00:00Z" "03-OCT-2007"]]]
       (let [args (conj time-tuple "should parse as a daylight savings time iso instant")]
         (apply test-parse-instant args)))))
+
+(t/deftest test-terminate-format
+  (test-parse-instant "2001-07-04T04:00:00Z"
+                      "20010704000000.000000"
+                      "should parse terminate format (with zero time)")
+  (test-parse-instant "2001-07-04T11:23:15.321Z"
+                      "20010704072315.321000"
+                      "should parse terminate format (with non-zero time)"))
