@@ -52,6 +52,7 @@
     (catch Throwable t
       nil)))
 
+;; DEPRECATED - Prefer the more explicit `local-time->instant` or `parse-iso-instant`.
 (defn parse-instant
   [s]
   (or (first (keep #(local-time->instant s %) formatters))
