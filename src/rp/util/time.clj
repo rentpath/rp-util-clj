@@ -7,10 +7,12 @@
 
 (def default-zone-id (ZoneId/of "America/New_York"))
 
+;; Some common patterns for parse-instant
 (def patterns
-  {:review      "dd-MMM-yyyy"
-   :floorplan   "MM/dd/yyyy"
-   :last-update "MM/dd/yyyy HH:mm:ss"})
+  ["dd-MMM-yyyy"
+   "MM/dd/yyyy"
+   "MM/dd/yyyy HH:mm:ss"
+   "yyyyMMddHHmmss.SSSSSS"])
 
 (defn formatter
   "Returns case insensitive DateTimeFormatter built
@@ -30,11 +32,7 @@
          (toFormatter (Locale/getDefault))))))
 
 (def formatters
-  (merge (reduce-kv (fn [m k v]
-                      (assoc m k (formatter v)))
-                    {}
-                    patterns)
-         {:iso-instant DateTimeFormatter/ISO_INSTANT}))
+  (mapv formatter patterns))
 
 (defn local-time->instant
   ([s formatter]
@@ -47,24 +45,15 @@
      (catch Throwable t
        nil))))
 
-(defn parses
-  [s [type ^DateTimeFormatter formatter]]
-  (when s
-    (let [parse-position (ParsePosition. 0)
-          unresolved-parse (.parseUnresolved formatter s parse-position)
-          parsed-all-chars? (= (count s) (.getIndex parse-position))]
-      (when (and unresolved-parse parsed-all-chars?)
-        type))))
+(defn parse-iso-instant
+  [s]
+  (try
+    (Instant/parse s)
+    (catch Throwable t
+      nil)))
 
-(defmulti parse-instant (fn [s]
-                          (when-let [[pattern-type] (keep #(parses s %) formatters)]
-                            pattern-type)))
-(defmethod parse-instant :default [s] nil)
-(defmethod parse-instant :review [s]
-  (local-time->instant s (:review formatters)))
-(defmethod parse-instant :floorplan [s]
-  (local-time->instant s (:floorplan formatters)))
-(defmethod parse-instant :last-update [s]
-  (local-time->instant s (:last-update formatters)))
-(defmethod parse-instant :iso-instant [s]
-  (Instant/parse s))
+;; DEPRECATED - Prefer the more explicit `local-time->instant` or `parse-iso-instant`.
+(defn parse-instant
+  [s]
+  (or (first (keep #(local-time->instant s %) formatters))
+      (parse-iso-instant s)))
