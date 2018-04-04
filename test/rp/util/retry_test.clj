@@ -1,22 +1,26 @@
 (ns rp.util.retry-test
   (:require [clojure.test :refer :all]
-            [rp.util.retry :refer :all]))
+            [rp.util.retry :refer :all])
+  (:import (java.util.concurrent TimeoutException)))
 
 (defn build-collector []
   (atom {:counter      0
          :periods      []
          :last-attempt (System/currentTimeMillis)}))
 
+(defn update-collector [collector]
+  (swap! collector
+         (fn [{:keys [last-attempt counter] :as c}]
+           (let [now (System/currentTimeMillis)]
+             (-> (if (> counter 0)
+                   (update c :periods conj (- now last-attempt))
+                   c)
+                 (update :counter inc)
+                 (assoc :last-attempt now))))))
+
 (defn build-testfn [collector]
   (fn []
-    (swap! collector
-           (fn [{:keys [last-attempt counter] :as c}]
-             (let [now (System/currentTimeMillis)]
-               (-> (if (> counter 0)
-                     (update c :periods conj (- now last-attempt))
-                     c)
-                   (update :counter inc)
-                   (assoc :last-attempt now)))))
+    (update-collector collector)
     (throw (Exception. "Generic Exception"))))
 
 (defn test-collector [collector & {:keys [expected-attempts expected-delay timing-error-allowance]
@@ -54,9 +58,9 @@
         f (build-testfn collector)
         error-fn-call-count (atom 0)
         error-fn (fn [^Exception e]
-                  (swap! error-fn-call-count inc)
-                  (is (= (.getMessage e) "Generic Exception"))
-                  (is (instance? Exception e)))]
+                   (swap! error-fn-call-count inc)
+                   (is (= (.getMessage e) "Generic Exception"))
+                   (is (instance? Exception e)))]
     (try (with-retries f :error-fn error-fn)
          (catch Exception _))
     (is (= 5 @error-fn-call-count))))
@@ -66,9 +70,28 @@
         f (build-testfn collector)
         failure-fn-call-count (atom 0)
         failure-fn (fn [^Exception e]
-                   (swap! failure-fn-call-count inc)
-                   (is (= (.getMessage e) "Generic Exception"))
-                   (is (instance? Exception e)))]
+                     (swap! failure-fn-call-count inc)
+                     (is (= (.getMessage e) "Generic Exception"))
+                     (is (instance? Exception e)))]
     (try (with-retries f :failure-fn failure-fn)
          (catch Exception _))
     (is (= 1 @failure-fn-call-count))))
+
+(deftest test-errorless
+  (let [collector (build-collector)
+        f #(update-collector collector)]
+    (with-retries f)
+    (test-collector collector :expected-attempts 1)))
+
+(deftest test-limited-exceptions
+  (let [generic-collector (build-collector)
+        generic-f (build-testfn generic-collector)
+        specific-collector (build-collector)
+        specific-f (fn []
+                     (update-collector specific-collector)
+                     (throw (TimeoutException. "Generic Exception")))]
+    (is (thrown? Exception (with-retries generic-f :exceptions [TimeoutException])))
+    (try (with-retries specific-f :exceptions [TimeoutException])
+         (catch Exception _))
+    (test-collector generic-collector :expected-attempts 1)
+    (test-collector specific-collector)))
