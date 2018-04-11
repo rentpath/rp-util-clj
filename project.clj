@@ -11,4 +11,16 @@
   :global-vars {*warn-on-reflection* true}
   :dependencies [[org.clojure/tools.reader "1.1.1"]
                  [org.clojure/test.check "0.9.0"]]
-  :profiles {:dev {:dependencies [[org.clojure/clojure "1.9.0"]]}})
+  :profiles {:dev {:dependencies [[org.clojure/clojure "1.9.0"]
+                                  [circleci/circleci.test "0.4.1"]
+                                  [cloverage "1.0.10"]]
+                   :aliases {"test-coverage" ["run"
+                                              "-m" "cloverage.coverage"
+                                              "--runner" "circleci.test"
+                                              "--ns-regex" "rp\\.util\\..*"
+                                              "--ns-exclude-regex" "clojure\\..*"
+                                              "--src-ns-path" "src"
+                                              "--test-ns-path" "test"
+                                              "--fail-threshold" "95"
+                                              "--low-watermark" "96"
+                                              "--high-watermark" "99"]}}})
