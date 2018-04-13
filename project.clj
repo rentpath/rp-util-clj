@@ -10,5 +10,6 @@
                                      :sign-releases false}]]
   :global-vars {*warn-on-reflection* true}
   :dependencies [[org.clojure/tools.reader "1.1.1"]
-                 [org.clojure/test.check "0.9.0"]]
+                 [org.clojure/test.check "0.9.0"]
+                 [org.clojure/core.typed "0.5.0"]]
   :profiles {:dev {:dependencies [[org.clojure/clojure "1.9.0"]]}})
