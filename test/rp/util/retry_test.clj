@@ -26,7 +26,7 @@
 (defn test-collector [collector & {:keys [expected-attempts expected-delay timing-error-allowance]
                                    :or   {expected-attempts      5
                                           expected-delay         1000
-                                          timing-error-allowance 30}}]
+                                          timing-error-allowance 50}}]
   (let [{:keys [periods counter]} @collector]
     (is (= expected-attempts counter))
     (doseq [i (range (dec expected-attempts))]
