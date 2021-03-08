@@ -30,7 +30,7 @@
   (let [{:keys [periods counter]} @collector]
     (is (= expected-attempts counter))
     (doseq [i (range (dec expected-attempts))]
-      (is (< (Math/abs (- (nth periods i) (* (inc i) expected-delay))) timing-error-allowance)))))
+      (is (< (Math/abs ^long (- (nth periods i) (* (inc i) expected-delay))) timing-error-allowance)))))
 
 (deftest test-defaults
   (let [collector (build-collector)
