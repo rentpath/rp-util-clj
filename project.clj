@@ -11,8 +11,7 @@
   :global-vars {*warn-on-reflection* true}
   :dependencies [[org.clojure/tools.reader "1.1.1"]
                  [org.clojure/test.check "0.9.0"]
-                 [org.clojure/tools.logging "1.1.0"]
-                 [com.rentpath/rp-error-clj "0.1.7"]]
+                 [org.clojure/tools.logging "1.1.0"]]
   :repositories {"releases"  {:url           "https://nexus.tools.rentpath.com/repository/maven-releases/"
                               :sign-releases false
                               :username      [:gpg :env/nexus_username]
